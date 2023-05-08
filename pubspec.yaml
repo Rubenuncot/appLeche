@@ -50,6 +50,7 @@ dependencies:
   animated_radio_buttons: ^1.0.0
   drop_down_list: ^0.0.5
   ticket_widget: ^0.0.1
+  material_dialogs: ^1.1.4
 
 dependency_overrides:
   path: ^1.8.3

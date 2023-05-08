@@ -6,6 +6,9 @@ import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_dialogs/dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_snackbars/smart_snackbars.dart';
@@ -90,29 +93,32 @@ class _LoadListScreenState extends State<LoadListScreen> {
   }
 
   void showBorrar() {
-    showDialog(
+    Dialogs.bottomMaterialDialog(
+        msg: 'Estás seguro de borrar la Carga? No se puede rehacer esta acción.',
+        title: 'Borrar Carga',
         context: context,
-        builder: (context) {
-          return CustomAlertDialog(
-              titulo: 'Borrar Carga',
-              showButton: false,
-              contenido: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Center(child: Text('Está seguro de borrar la carga?')),
-                  if (!aceptado)
-                    MaterialButton(
-                      onPressed: () {
-                        borrarCarga();
-                        Navigator.pop(context);
-                      },
-                      color: ThemeMain.buttonColor,
-                      disabledColor: Colors.black12,
-                      child: const Text('Si, estoy seguro'),
-                    ),
-                ],
-              ));
-        });
+        actions: [
+          IconsOutlineButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            text: 'Cancel',
+            iconData: Icons.cancel_outlined,
+            textStyle: const TextStyle(color: Colors.grey),
+            iconColor: Colors.grey,
+          ),
+          IconsButton(
+            onPressed: () {
+              borrarCarga();
+              Navigator.pop(context);
+            },
+            text: 'Delete',
+            iconData: Icons.delete,
+            color: Colors.red,
+            textStyle: const TextStyle(color: Colors.white),
+            iconColor: Colors.white,
+          ),
+        ]);
     borrar = false;
   }
 
