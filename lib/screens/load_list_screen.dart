@@ -94,7 +94,7 @@ class _LoadListScreenState extends State<LoadListScreen> {
 
   void showBorrar() {
     Dialogs.bottomMaterialDialog(
-        msg: 'Estás seguro de borrar la Carga? No se puede rehacer esta acción.',
+        msg: 'Estás seguro de borrar la Carga? No se puede deshacer esta acción.',
         title: 'Borrar Carga',
         context: context,
         actions: [
@@ -102,7 +102,7 @@ class _LoadListScreenState extends State<LoadListScreen> {
             onPressed: () {
               Navigator.pop(context);
             },
-            text: 'Cancel',
+            text: 'Cancelar',
             iconData: Icons.cancel_outlined,
             textStyle: const TextStyle(color: Colors.grey),
             iconColor: Colors.grey,
@@ -112,7 +112,7 @@ class _LoadListScreenState extends State<LoadListScreen> {
               borrarCarga();
               Navigator.pop(context);
             },
-            text: 'Delete',
+            text: 'Borrar',
             iconData: Icons.delete,
             color: Colors.red,
             textStyle: const TextStyle(color: Colors.white),

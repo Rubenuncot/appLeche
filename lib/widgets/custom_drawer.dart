@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:material_dialogs/dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:smart_snackbars/smart_snackbars.dart';
 import 'package:transportes_leche/providers/model_provider.dart';
 import 'package:transportes_leche/screens/screens.dart';
@@ -34,14 +37,38 @@ class CustomDrawer extends StatelessWidget {
             const SizedBox(height: 20,),
             // _listTile('Imprimir', Icons.print, Colors.black12, () => Navigator.pushNamed(context, PrintBluetooth.routeName)),
             // const SizedBox(height: 20,),
-            _listTile('Borrado hasta la fecha', Icons.delete, Colors.white12, () async{
-
-              SmartSnackBars.showTemplatedSnackbar (
+            _listTile('Borrado hasta la fecha', Icons.delete, Colors.white12, () {
+              Dialogs.bottomMaterialDialog(
+                  msg: 'Estás seguro de borrar todos los registros? No se puede deshacer esta acción.',
+                  title: 'Borrar Registros',
                   context: context,
-                subTitle: 'Borrados ${await deleteElements()} elementos.',
-                backgroundColor: ThemeMain.buttonColor,
-                  animationCurve: const ElasticInCurve()
-              );
+                  actions: [
+                    IconsOutlineButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      text: 'Cancelar',
+                      iconData: Icons.cancel_outlined,
+                      textStyle: const TextStyle(color: Colors.grey),
+                      iconColor: Colors.grey,
+                    ),
+                    IconsButton(
+                      onPressed: () async {
+                        SmartSnackBars.showTemplatedSnackbar (
+                            context: context,
+                            subTitle: 'Borrados ${await deleteElements()} elementos.',
+                        backgroundColor: ThemeMain.buttonColor,
+                        animationCurve: const ElasticInCurve()
+                        );
+                        Navigator.pop(context);
+                      },
+                      text: 'Borrar',
+                      iconData: Icons.delete,
+                      color: Colors.red,
+                      textStyle: const TextStyle(color: Colors.white),
+                      iconColor: Colors.white,
+                    ),
+                  ]);
 
             }),
             const SizedBox(height: 40,),
