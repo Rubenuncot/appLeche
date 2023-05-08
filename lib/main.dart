@@ -4,7 +4,6 @@ import 'package:transportes_leche/models/ftp_config.dart';
 import 'package:transportes_leche/providers/fpt_provider.dart';
 import 'package:transportes_leche/providers/input_provider.dart';
 import 'package:transportes_leche/providers/model_provider.dart';
-import 'package:transportes_leche/providers/tanque_provider.dart';
 import 'package:transportes_leche/providers/theme_provider.dart';
 import 'package:transportes_leche/router/router.dart';
 import 'package:transportes_leche/shared_preferences/preferences.dart';
@@ -26,9 +25,6 @@ void main() async {
       ),
       ChangeNotifierProvider(
         create: (context) => InputProvider(),
-      ),
-      ChangeNotifierProvider(
-        create: (context) => TanqueProvider(),
       ),
     ],
     child: const MyApp(),
