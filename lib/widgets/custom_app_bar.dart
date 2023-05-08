@@ -1,13 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 
 import '../helpers/date_time.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String name;
+  final AdvancedDrawerController advancedDrawerController;
 
-  const CustomAppBar({Key? key, required this.name}) : super(key: key);
+  const CustomAppBar({Key? key, required this.name, required this.advancedDrawerController}) : super(key: key);
 
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
@@ -59,6 +61,21 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
+        leading: IconButton(
+          onPressed: () => widget.advancedDrawerController.showDrawer(),
+          icon: ValueListenableBuilder<AdvancedDrawerValue>(
+            valueListenable: widget.advancedDrawerController,
+            builder: (_, value, __) {
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                child: Icon(
+                  value.visible ? Icons.clear : Icons.menu,
+                  key: ValueKey<bool>(value.visible),
+                ),
+              );
+            },
+          ),
+        ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

@@ -101,7 +101,7 @@ class _DownloadListScreenState extends State<DownloadListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cargas'),
+        title: const Text('Descargas'),
         backgroundColor: ThemeMain.buttonColor,
       ),
       body: Column(

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:transportes_leche/providers/theme_provider.dart';
 import 'package:transportes_leche/shared_preferences/preferences.dart';
@@ -23,6 +24,8 @@ class ConfigScreen extends StatefulWidget {
 class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver{
   /* Variables */
   bool showNowDialog = false;
+
+  final _advancedDrawerController = AdvancedDrawerController();
 
   //--Controllers--//
   final TextEditingController _controllerPort = TextEditingController();
@@ -67,162 +70,194 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
     });
 
     return GestureDetector(
-      child: Scaffold(
-        appBar: const CustomAppBar(name: 'Ajustes'),
+      child: AdvancedDrawer(
+        backdrop: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  stops: const [0.759, 1],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [const Color.fromARGB(255, 0, 40, 75), const Color.fromARGB(255, 0, 40, 75).withOpacity(0.7)]
+              )
+          ),
+        ),
+        controller: _advancedDrawerController,
+        animationCurve: Curves.easeInOut,
+        animationDuration: const Duration(milliseconds: 300),
+        animateChildDecoration: true,
+        rtlOpening: false,
+        // openScale: 1.0,
+        disabledGestures: false,
+        childDecoration: const BoxDecoration(
+          // NOTICE: Uncomment if you want to add shadow behind the page.
+          // Keep in mind that it may cause animation jerks.
+          // boxShadow: <BoxShadow>[
+          //   BoxShadow(
+          //     color: Colors.black12,
+          //     blurRadius: 0.0,
+          //   ),
+          // ],
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+        ),
         drawer: CustomDrawer(modelProvider: Provider.of<ModelProvider>(context)),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              _containerRow(context, 'Cooperativa', _controllerCoop, () {
-                showDialog(context: context, builder: (context) => CustomAlertDialog(
-                  titulo: 'Cambiar Cooperativa',
+        child: Scaffold(
+          appBar: CustomAppBar(name: 'Ajustes', advancedDrawerController: _advancedDrawerController,),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                _containerRow(context, 'Cooperativa', _controllerCoop, () {
+                  showDialog(context: context, builder: (context) => CustomAlertDialog(
+                    titulo: 'Cambiar Cooperativa',
+                    contenido: Column(
+                      children: [
+                        const Text('Escriba el nombre de la cooperativa'),
+                        TextField(
+                          onChanged: (value) {
+                            _controllerCoop.text = value;
+                            Preferences.cooperativa = value;
+                          },
+                        )
+                      ],
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),);
+                }),
+                _containerRow(context, 'Puerto', _controllerPort, () => showDialog(context: context, builder: (context) => CustomAlertDialog(
+                  titulo: 'Cambiar Puerto',
                   contenido: Column(
                     children: [
-                      const Text('Escriba el nombre de la cooperativa'),
+                      const Text('Para cambiar el puerto contacte con GAE para tener más información y no provocar errores.'),
                       TextField(
                         onChanged: (value) {
-                          _controllerCoop.text = value;
-                          Preferences.cooperativa = value;
+                          _controllerPort.text = value;
+                          Preferences.port = int.parse(value);
                         },
+                        keyboardType: TextInputType.number,
                       )
                     ],
                   ),
                   onPressed: () => Navigator.pop(context),
-                ),);
-              }),
-              _containerRow(context, 'Puerto', _controllerPort, () => showDialog(context: context, builder: (context) => CustomAlertDialog(
-                titulo: 'Cambiar Puerto',
-                contenido: Column(
-                  children: [
-                    const Text('Para cambiar el puerto contacte con GAE para tener más información y no provocar errores.'),
-                    TextField(
-                      onChanged: (value) {
-                        _controllerPort.text = value;
-                        Preferences.port = int.parse(value);
-                      },
-                      keyboardType: TextInputType.number,
-                    )
-                  ],
-                ),
-                onPressed: () => Navigator.pop(context),
-              ),)),
-              _containerRow(context, 'Servidor', _controllerHost, () => showDialog(context: context, builder: (context) => CustomAlertDialog(
-                titulo: 'Cambiar Servidor',
-                contenido: Column(
-                  children: [
-                    const Text('Para cambiar el servidor contacte con GAE para tener más información y no provocar errores.'),
-                    TextField(
-                      onChanged: (value) {
-                        _controllerHost.text = value;
-                        Preferences.host = value;
-                      },
-                      keyboardType: TextInputType.number,
-                    )
-                  ],
-                ),
-                onPressed: () => Navigator.pop(context),
-              ),)),
-              _containerRow(context, 'Ruta', _controllerPath, () {
-                showDialog(context: context, builder: (context) => CustomAlertDialog(
-                  titulo: 'Cambiar Ruta',
+                ),)),
+                _containerRow(context, 'Servidor', _controllerHost, () => showDialog(context: context, builder: (context) => CustomAlertDialog(
+                  titulo: 'Cambiar Servidor',
                   contenido: Column(
                     children: [
-                      const Text('Para cambiar la ruta contacte con GAE para tener más información y no provocar errores.'),
+                      const Text('Para cambiar el servidor contacte con GAE para tener más información y no provocar errores.'),
                       TextField(
                         onChanged: (value) {
-                          _controllerPath.text = value;
-                          Preferences.path = value;
+                          _controllerHost.text = value;
+                          Preferences.host = value;
                         },
+                        keyboardType: TextInputType.number,
                       )
                     ],
                   ),
                   onPressed: () => Navigator.pop(context),
-                ),);
-              }),
-              _containerRow(context, 'Usuario', _controllerUser, () {
-                showDialog(context: context, builder: (context) => CustomAlertDialog(
-                  titulo: 'Cambiar Usuario',
-                  contenido: Column(
+                ),)),
+                _containerRow(context, 'Ruta', _controllerPath, () {
+                  showDialog(context: context, builder: (context) => CustomAlertDialog(
+                    titulo: 'Cambiar Ruta',
+                    contenido: Column(
+                      children: [
+                        const Text('Para cambiar la ruta contacte con GAE para tener más información y no provocar errores.'),
+                        TextField(
+                          onChanged: (value) {
+                            _controllerPath.text = value;
+                            Preferences.path = value;
+                          },
+                        )
+                      ],
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),);
+                }),
+                _containerRow(context, 'Usuario', _controllerUser, () {
+                  showDialog(context: context, builder: (context) => CustomAlertDialog(
+                    titulo: 'Cambiar Usuario',
+                    contenido: Column(
+                      children: [
+                        const Text('Para cambiar el usuario contacte con GAE para tener más información y no provocar errores.'),
+                        TextField(
+                          onChanged: (value) {
+                            _controllerUser.text = value;
+                            Preferences.user = value;
+                          },
+                        )
+                      ],
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),);
+                }),
+                _containerRow(context, 'Contraseña', _controllerPass, () {
+                  showDialog(context: context, builder: (context) => CustomAlertDialog(
+                    titulo: 'Cambiar Contraseña',
+                    contenido: Column(
+                      children: [
+                        const Text('Para cambiar la contraseña contacte con GAE para tener más información y no provocar errores.'),
+                        TextField(
+                          onChanged: (value) {
+                            _controllerPass.text = value;
+                            Preferences.pass = value;
+                          },
+                        )
+                      ],
+                    ),
+                    onPressed: () {
+                      if(Preferences.port! > 0 && Preferences.host!.length > 1 && Preferences.user!.length > 1 && Preferences.path!.length > 1 && Preferences.pass!.length > 1){
+                        showNowDialog = true;
+                      }
+                      Navigator.pop(context);
+                    },
+                  ),);
+                }),
+                Container(
+                  margin: const EdgeInsets.only(top: 20, right: 20),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          bottomRight: Radius.circular(20)),
+                      color: Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? Colors.black12 : Colors.white12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Para cambiar el usuario contacte con GAE para tener más información y no provocar errores.'),
-                      TextField(
-                        onChanged: (value) {
-                          _controllerUser.text = value;
-                          Preferences.user = value;
-                        },
-                      )
-                    ],
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                ),);
-              }),
-              _containerRow(context, 'Contraseña', _controllerPass, () {
-                showDialog(context: context, builder: (context) => CustomAlertDialog(
-                  titulo: 'Cambiar Contraseña',
-                  contenido: Column(
-                    children: [
-                      const Text('Para cambiar la contraseña contacte con GAE para tener más información y no provocar errores.'),
-                      TextField(
-                        onChanged: (value) {
-                          _controllerPass.text = value;
-                          Preferences.pass = value;
-                        },
-                      )
-                    ],
-                  ),
-                  onPressed: () {
-                    if(Preferences.port! > 0 && Preferences.host!.length > 1 && Preferences.user!.length > 1 && Preferences.path!.length > 1 && Preferences.pass!.length > 1){
-                      showNowDialog = true;
-                    }
-                    Navigator.pop(context);
-                  },
-                ),);
-              }),
-              Container(
-                margin: const EdgeInsets.only(top: 20, right: 20),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(20),
-                        bottomRight: Radius.circular(20)),
-                    color: Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? Colors.black12 : Colors.white12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 120, left: 20),
-                        child:TextField(
-                          controller: _controllerTheme,
-                          enabled: false,
-                          decoration: InputDecoration(
-                              disabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: Colors.black12),
-                                  borderRadius: BorderRadius.circular(5)),
-                              labelText: 'Tema'),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 120, left: 20),
+                          child:TextField(
+                            controller: _controllerTheme,
+                            enabled: false,
+                            decoration: InputDecoration(
+                                disabledBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(color: Colors.black12),
+                                    borderRadius: BorderRadius.circular(5)),
+                                labelText: 'Tema'),
+                          ),
                         ),
                       ),
-                    ),
-                    Row(
-                     children: [
-                       const Icon(Icons.light_mode),
-                       Switch(
-                         value: Preferences.theme ?? false,
-                         onChanged: (value) {
-                           value ? Provider.of<ThemeProvider>(context, listen: false).setDarktMode() : Provider.of<ThemeProvider>(context, listen: false).setLightMode();
-                           setState(() {
+                      Row(
+                       children: [
+                         const Icon(Icons.light_mode),
+                         Switch(
+                           value: Preferences.theme ?? false,
+                           onChanged: (value) {
+                             value ? Provider.of<ThemeProvider>(context, listen: false).setDarktMode() : Provider.of<ThemeProvider>(context, listen: false).setLightMode();
+                             setState(() {
 
-                           });
-                       },),
-                       const Icon(Icons.dark_mode)
-                     ],
-                    )
+                             });
+                         },),
+                         const Icon(Icons.dark_mode)
+                       ],
+                      )
 
-                  ],
-                ),
-              )
-            ],
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

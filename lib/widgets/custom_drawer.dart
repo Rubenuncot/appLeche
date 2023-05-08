@@ -16,7 +16,7 @@ class CustomDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       elevation: 0,
-      backgroundColor: ThemeMain.primaryColorLight,
+      backgroundColor: const Color.fromARGB(255, 0, 40, 75),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
         child: ListView(
@@ -26,15 +26,15 @@ class CustomDrawer extends StatelessWidget {
                 128, 255, 225, 88),() => Navigator.pushReplacementNamed(context, MainScreen.routeName)),
             const SizedBox(height: 20,),
             const SizedBox(height: 40,),
-            _listTile('Ajustes', Icons.settings, Colors.black12, () => Navigator.pushNamed(context, ConfigScreen.routeName)),
+            _listTile('Ajustes', Icons.settings, Colors.white12, () => Navigator.pushNamed(context, ConfigScreen.routeName)),
             const SizedBox(height: 20,),
-            _listTile('Lista de Cargas', Icons.list_alt, Colors.black12, () => Navigator.pushNamed(context, LoadListScreen.routeName)),
+            _listTile('Lista de Cargas', Icons.list_alt, Colors.white12, () => Navigator.pushNamed(context, LoadListScreen.routeName)),
             const SizedBox(height: 20,),
-            _listTile('Lista de Descargas', Icons.list, Colors.black12, () => Navigator.pushNamed(context, DownloadListScreen.routeName)),
+            _listTile('Lista de Descargas', Icons.list, Colors.white12, () => Navigator.pushNamed(context, DownloadListScreen.routeName)),
             const SizedBox(height: 20,),
             // _listTile('Imprimir', Icons.print, Colors.black12, () => Navigator.pushNamed(context, PrintBluetooth.routeName)),
             // const SizedBox(height: 20,),
-            _listTile('Borrado hasta la fecha', Icons.delete, Colors.black12, () async{
+            _listTile('Borrado hasta la fecha', Icons.delete, Colors.white12, () async{
 
               SmartSnackBars.showTemplatedSnackbar (
                   context: context,

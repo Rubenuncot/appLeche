@@ -3,6 +3,7 @@ import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_snackbars/smart_snackbars.dart';
@@ -27,6 +28,9 @@ class LoadScreen extends StatefulWidget {
 }
 
 class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
+
+  final _advancedDrawerController = AdvancedDrawerController();
+
   String fecha = '';
   bool change = true;
 
@@ -596,381 +600,414 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
       onTap: () {
         _focusNodeCode.unfocus();
       },
-      child: Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        /* Botones flotantes */
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SizedBox(
-            width: double.infinity,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                MaterialButton(
-                  height: 50,
-                  onPressed: () {
-                    Provider.of<InputProvider>(context, listen: false)
-                        .valueGan = '';
-                    Provider.of<InputProvider>(context, listen: false)
-                        .valueLitList = [];
-                    Provider.of<InputProvider>(context, listen: false)
-                        .valueTempList = [];
-
-                    Navigator.pushReplacementNamed(
-                        context, MainScreen.routeName);
-                  },
-                  color: ThemeMain.buttonColor3,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100)),
-                  elevation: 0,
-                  child: const Icon(
-                    Icons.arrow_back,
-                    color: ThemeMain.backgroundColorLight,
-                  ),
-                ),
-                MaterialButton(
-                  height: 50,
-                  onPressed: litrosChange ? () {
-                    printTest();
-                    SmartSnackBars.showTemplatedSnackbar(
-                        context: context,
-                        backgroundColor: ThemeMain.buttonColor,
-                        animationCurve: const ElasticInCurve(),
-                        subTitle: 'Carga creada correctamente');
-                  } : null,
-                  color: ThemeMain.buttonColor,
-                    disabledColor: Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? Colors.black12 : Colors.white30,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100)),
-                  elevation: 0,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.save_alt,
-                        color: change ? ThemeMain.backgroundColorLight : Colors.black12,
-                      ),
-                      const Text('|', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
-                      const Icon(
-                        Icons.print,
-                        color: ThemeMain.backgroundColorLight,
-                      ),
-                    ],
-                  )
-                ),
-              ],
-            ),
+      child: AdvancedDrawer(
+        backdrop: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  stops: const [0.759, 1],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [const Color.fromARGB(255, 0, 40, 75), const Color.fromARGB(255, 0, 40, 75).withOpacity(0.7)]
+              )
           ),
         ),
-        appBar: CustomAppBar(
-          name: Preferences.conductor ?? '',
+        controller: _advancedDrawerController,
+        animationCurve: Curves.easeInOut,
+        animationDuration: const Duration(milliseconds: 300),
+        animateChildDecoration: true,
+        rtlOpening: false,
+        // openScale: 1.0,
+        disabledGestures: false,
+        childDecoration: const BoxDecoration(
+          // NOTICE: Uncomment if you want to add shadow behind the page.
+          // Keep in mind that it may cause animation jerks.
+          // boxShadow: <BoxShadow>[
+          //   BoxShadow(
+          //     color: Colors.black12,
+          //     blurRadius: 0.0,
+          //   ),
+          // ],
+          borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
         drawer: CustomDrawer(modelProvider: Provider.of<ModelProvider>(context)),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Nombre: ${getNombre()}'),
-                const SizedBox(
-                  height: 20,
-                ),
-                DropdownButtonFormField<String>(
-                  isExpanded: true,
-                  focusColor: const Color.fromARGB(255, 111, 111, 252),
-                  decoration: InputDecorations.authImputDecoration(
-                    context: context,
-                      hintText: '', labelText: 'Productos'),
-                  value: productoSelected,
-                  elevation: 16,
-                  style: const TextStyle(
-                    color: Color.fromARGB(255, 111, 111, 252),
+        child: Scaffold(
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          /* Botones flotantes */
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: SizedBox(
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MaterialButton(
+                    height: 50,
+                    onPressed: () {
+                      Provider.of<InputProvider>(context, listen: false)
+                          .valueGan = '';
+                      Provider.of<InputProvider>(context, listen: false)
+                          .valueLitList = [];
+                      Provider.of<InputProvider>(context, listen: false)
+                          .valueTempList = [];
+
+                      Navigator.pushReplacementNamed(
+                          context, MainScreen.routeName);
+                    },
+                    color: ThemeMain.buttonColor3,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100)),
+                    elevation: 0,
+                    child: const Icon(
+                      Icons.arrow_back,
+                      color: ThemeMain.backgroundColorLight,
+                    ),
                   ),
-                  onChanged: (String? value) {
-                    change = true;
-                    setState(() {
-                      productoSelected = value!;
-                    });
-                  },
-                  items:
-                      productos.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        focusNode: _focusNodeCode,
-                        onChanged: (value) {
-                          change = true;
-                          Provider.of<InputProvider>(context, listen: false)
-                              .valueGan = value;
-                          rellenarListas();
-                        },
-                        keyboardType: TextInputType.number,
-                        initialValue:
-                            Provider.of<InputProvider>(context).valueGan,
-                        decoration: InputDecorations.authImputDecoration(
+                  MaterialButton(
+                    height: 50,
+                    onPressed: litrosChange ? () {
+                      printTest();
+                      SmartSnackBars.showTemplatedSnackbar(
                           context: context,
-                            hintText: '', labelText: 'Código'),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 50,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, SearchScreen.routeName,
-                            arguments: [listGan![0], LoadScreen.routeName]);
-                      },
-                      style: const ButtonStyle(
-                          shape: MaterialStatePropertyAll(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      bottomRight: Radius.circular(20)))),
-                          backgroundColor:
-                              MaterialStatePropertyAll(ThemeMain.buttonColor2),
-                          side: MaterialStatePropertyAll(
-                              BorderSide(color: Colors.black12))),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [Icon(Icons.search), Text('Buscar')],
-                      ),
+                          backgroundColor: ThemeMain.buttonColor,
+                          animationCurve: const ElasticInCurve(),
+                          subTitle: 'Carga creada correctamente');
+                    } : null,
+                    color: ThemeMain.buttonColor,
+                      disabledColor: Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? Colors.black12 : Colors.white30,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100)),
+                    elevation: 0,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.save_alt,
+                          color: change ? ThemeMain.backgroundColorLight : Colors.black12,
+                        ),
+                        const Text('|', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
+                        const Icon(
+                          Icons.print,
+                          color: ThemeMain.backgroundColorLight,
+                        ),
+                      ],
                     )
-                  ],
-                ),
-                Container(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.9,
-                      maxHeight: MediaQuery.of(context).size.height * 0.6),
-                  /* Tamaño de pantalla */
-                  child: ListView.builder(
-                    itemCount: getTanques(),
-                    itemBuilder: (context, index) => Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black26),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              spreadRadius: 2,
-                              blurRadius: 10,
-                            )
-                          ],
-                          color: Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? const Color.fromARGB(1, 56, 56, 56) : Colors.white30),
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 20),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 15),
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 10),
-                                decoration: BoxDecoration(
-                                    color: ThemeMain.buttonColor,
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Text(
-                                  'Tanque: ${tanques.isNotEmpty ? tanques[index].codigo : ''}',
-                                  style: const TextStyle(color: Colors.white),
-                                ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          appBar: CustomAppBar(
+            name: Preferences.conductor ?? '',
+            advancedDrawerController: _advancedDrawerController,
+          ),
+          body: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Nombre: ${getNombre()}'),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  DropdownButtonFormField<String>(
+                    isExpanded: true,
+                    focusColor: const Color.fromARGB(255, 111, 111, 252),
+                    decoration: InputDecorations.authImputDecoration(
+                      context: context,
+                        hintText: '', labelText: 'Productos'),
+                    value: productoSelected,
+                    elevation: 16,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 111, 111, 252),
+                    ),
+                    onChanged: (String? value) {
+                      change = true;
+                      setState(() {
+                        productoSelected = value!;
+                      });
+                    },
+                    items:
+                        productos.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          focusNode: _focusNodeCode,
+                          onChanged: (value) {
+                            change = true;
+                            Provider.of<InputProvider>(context, listen: false)
+                                .valueGan = value;
+                            rellenarListas();
+                          },
+                          keyboardType: TextInputType.number,
+                          initialValue:
+                              Provider.of<InputProvider>(context).valueGan,
+                          decoration: InputDecorations.authImputDecoration(
+                            context: context,
+                              hintText: '', labelText: 'Código'),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, SearchScreen.routeName,
+                              arguments: [listGan![0], LoadScreen.routeName]);
+                        },
+                        style: const ButtonStyle(
+                            shape: MaterialStatePropertyAll(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        bottomRight: Radius.circular(20)))),
+                            backgroundColor:
+                                MaterialStatePropertyAll(ThemeMain.buttonColor2),
+                            side: MaterialStatePropertyAll(
+                                BorderSide(color: Colors.black12))),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [Icon(Icons.search), Text('Buscar')],
+                        ),
+                      )
+                    ],
+                  ),
+                  Container(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.9,
+                        maxHeight: MediaQuery.of(context).size.height * 0.6),
+                    /* Tamaño de pantalla */
+                    child: ListView.builder(
+                      itemCount: getTanques(),
+                      itemBuilder: (context, index) => Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black26),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                spreadRadius: 2,
+                                blurRadius: 10,
                               )
                             ],
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.black12,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.black12)),
-                            child: Row(
+                            color: Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? const Color.fromARGB(1, 56, 56, 56) : Colors.white30),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 20),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 15),
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
                               mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Expanded(
-                                    child: TextFormField(
-                                  onChanged: (value) {
-                                    change = true;
-                                    InputProvider inputProvider =
-                                        Provider.of<InputProvider>(context,
-                                            listen: false);
-
-                                    inputProvider.valueLit = value;
-                                  },
-                                  focusNode: focusNodesLitros.isEmpty
-                                      ? FocusNode()
-                                      : focusNodesLitros[index],
-                                  onEditingComplete: () {
-                                    InputProvider inputProvider =
-                                        Provider.of<InputProvider>(context,
-                                            listen: false);
-
-                                    inputProvider
-                                        .setValueLit(inputProvider.valueLit);
-                                    FocusScope.of(context)
-                                        .requestFocus(focusNodesTemp[index]);
-                                    litrosChange = true;
-                                  },
-                                  keyboardType: TextInputType.number,
-                                  decoration:
-                                      InputDecorations.authImputDecoration(
-                                        context: context,
-                                          hintText: '', labelText: 'Litros'),
-                                )),
-                                const SizedBox(
-                                  width: 70,
-                                ),
-                                const Text('Litros')
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 10),
+                                  decoration: BoxDecoration(
+                                      color: ThemeMain.buttonColor,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Text(
+                                    'Tanque: ${tanques.isNotEmpty ? tanques[index].codigo : ''}',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                )
                               ],
                             ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.black12,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.black12)),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                    child: TextFormField(
-                                  onChanged: (value) {
-                                    change = true;
-                                    InputProvider inputProvider =
-                                        Provider.of<InputProvider>(context,
-                                            listen: false);
-
-                                    inputProvider.valueTemp = value;
-                                  },
-                                  focusNode: focusNodesTemp.isEmpty
-                                      ? FocusNode()
-                                      : focusNodesTemp[index],
-                                  onEditingComplete: () {
-                                    InputProvider inputProvider =
-                                        Provider.of<InputProvider>(context,
-                                            listen: false);
-
-                                    inputProvider
-                                        .setValueTemp(inputProvider.valueTemp);
-                                    focusNodesTemp[index].unfocus();
-                                  },
-                                  keyboardType: TextInputType.number,
-                                  decoration:
-                                      InputDecorations.authImputDecoration(
-                                        context: context,
-                                          hintText: '', labelText: 'Temp'),
-                                )),
-                                const SizedBox(
-                                  width: 70,
-                                ),
-                                const Text('Temp')
-                              ],
+                            const SizedBox(
+                              height: 20,
                             ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.black12,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.black12)),
-                            constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 0.8),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                AnimatedToggleSwitch.dual(
-                                  borderColor: Colors.black26,
-                                  colorBuilder: (value) {
-                                    if (value == 0) {
-                                      return Colors.redAccent;
-                                    } else {
-                                      return ThemeMain.buttonColor2;
-                                    }
-                                  },
-                                  iconBuilder: (value) {
-                                    if (value == 0) {
-                                      return const Icon(Icons.close);
-                                    } else {
-                                      return const Icon(Icons.add);
-                                    }
-                                  },
-                                  textBuilder: (value) {
-                                    if (value == 0) {
-                                      return const Text(
-                                        'No',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      );
-                                    } else {
-                                      return const Text('Si',
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.black12,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.black12)),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                      child: TextFormField(
+                                    onChanged: (value) {
+                                      change = true;
+                                      InputProvider inputProvider =
+                                          Provider.of<InputProvider>(context,
+                                              listen: false);
+
+                                      inputProvider.valueLit = value;
+                                    },
+                                    focusNode: focusNodesLitros.isEmpty
+                                        ? FocusNode()
+                                        : focusNodesLitros[index],
+                                    onEditingComplete: () {
+                                      InputProvider inputProvider =
+                                          Provider.of<InputProvider>(context,
+                                              listen: false);
+
+                                      inputProvider
+                                          .setValueLit(inputProvider.valueLit);
+                                      FocusScope.of(context)
+                                          .requestFocus(focusNodesTemp[index]);
+                                      litrosChange = true;
+                                    },
+                                    keyboardType: TextInputType.number,
+                                    decoration:
+                                        InputDecorations.authImputDecoration(
+                                          context: context,
+                                            hintText: '', labelText: 'Litros'),
+                                  )),
+                                  const SizedBox(
+                                    width: 70,
+                                  ),
+                                  const Text('Litros')
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.black12,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.black12)),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                      child: TextFormField(
+                                    onChanged: (value) {
+                                      change = true;
+                                      InputProvider inputProvider =
+                                          Provider.of<InputProvider>(context,
+                                              listen: false);
+
+                                      inputProvider.valueTemp = value;
+                                    },
+                                    focusNode: focusNodesTemp.isEmpty
+                                        ? FocusNode()
+                                        : focusNodesTemp[index],
+                                    onEditingComplete: () {
+                                      InputProvider inputProvider =
+                                          Provider.of<InputProvider>(context,
+                                              listen: false);
+
+                                      inputProvider
+                                          .setValueTemp(inputProvider.valueTemp);
+                                      focusNodesTemp[index].unfocus();
+                                    },
+                                    keyboardType: TextInputType.number,
+                                    decoration:
+                                        InputDecorations.authImputDecoration(
+                                          context: context,
+                                            hintText: '', labelText: 'Temp'),
+                                  )),
+                                  const SizedBox(
+                                    width: 70,
+                                  ),
+                                  const Text('Temp')
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.black12,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.black12)),
+                              constraints: BoxConstraints(
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width * 0.8),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  AnimatedToggleSwitch.dual(
+                                    borderColor: Colors.black26,
+                                    colorBuilder: (value) {
+                                      if (value == 0) {
+                                        return Colors.redAccent;
+                                      } else {
+                                        return ThemeMain.buttonColor2;
+                                      }
+                                    },
+                                    iconBuilder: (value) {
+                                      if (value == 0) {
+                                        return const Icon(Icons.close);
+                                      } else {
+                                        return const Icon(Icons.add);
+                                      }
+                                    },
+                                    textBuilder: (value) {
+                                      if (value == 0) {
+                                        return const Text(
+                                          'No',
                                           style: TextStyle(
-                                              fontWeight: FontWeight.bold));
-                                    }
-                                  },
-                                  current: muestras[index] == false ? 0 : 1 ,
-                                  onChanged: (p0) {
-                                    change = true;
-                                    value = p0;
-                                    muestras.removeAt(index);
-                                    muestras.insert(index, value == 0 ? false : true);
-                                    setState(() {});
-                                  },
-                                  first: 1,
-                                  second: 0,
-                                ),
-                                const Text(
-                                  'Muestra',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
+                                              fontWeight: FontWeight.bold),
+                                        );
+                                      } else {
+                                        return const Text('Si',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold));
+                                      }
+                                    },
+                                    current: muestras[index] == false ? 0 : 1 ,
+                                    onChanged: (p0) {
+                                      change = true;
+                                      value = p0;
+                                      muestras.removeAt(index);
+                                      muestras.insert(index, value == 0 ? false : true);
+                                      setState(() {});
+                                    },
+                                    first: 1,
+                                    second: 0,
+                                  ),
+                                  const Text(
+                                    'Muestra',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(
-                  height: 100,
-                )
-              ],
+                  const SizedBox(
+                    height: 100,
+                  )
+                ],
+              ),
             ),
           ),
         ),
