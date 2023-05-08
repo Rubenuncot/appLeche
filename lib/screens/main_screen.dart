@@ -87,6 +87,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
     Iterable<String> listMatriculas = listMat.keys;
 
+    matCod = [];
     for (var gan in listMatriculas) {
       matCod.add(gan);
     }
