@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 import 'package:flutter/cupertino.dart';

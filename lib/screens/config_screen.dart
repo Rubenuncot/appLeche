@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:restart_app/restart_app.dart';
 import 'package:transportes_leche/providers/theme_provider.dart';
 import 'package:transportes_leche/shared_preferences/preferences.dart';
 import 'package:transportes_leche/theme/theme_main.dart';

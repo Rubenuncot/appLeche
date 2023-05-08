@@ -1,10 +1,8 @@
-import 'dart:typed_data';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
-import 'package:image/image.dart' as Imag;
 
 class PrintBluetooth extends StatefulWidget {
   static String routeName = '_printBluetooth';

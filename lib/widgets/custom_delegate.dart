@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transportes_leche/providers/input_provider.dart';
-import 'package:transportes_leche/providers/model_provider.dart';
 
-import '../database/models/models.dart';
 import '../theme/theme_main.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
