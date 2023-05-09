@@ -92,6 +92,40 @@ class _LoadListScreenState extends State<LoadListScreen> {
     borrado = true;
   }
 
+  void dialogConnect() {
+    getBluetoots();
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: Colors.white,
+        child: Container(
+            height: 200,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+              color: Colors.grey.withOpacity(0.3),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+            child: ListView.builder(
+              itemCount: items.isNotEmpty ? items.length : 0,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  onTap: () {
+                    String mac = items[index].macAdress;
+                    Preferences.mac = mac;
+                    connect(mac);
+                    Navigator.pop(context);
+                  },
+                  title: Text('Name: ${items[index].name}'),
+                  subtitle: Text("macAdress: ${items[index].macAdress}"),
+                );
+              },
+            )),
+      ),
+    );
+  }
+
   void showBorrar() {
     Dialogs.bottomMaterialDialog(
         msg: 'Estás seguro de borrar la Carga? No se puede deshacer esta acción.',
@@ -416,9 +450,8 @@ class _LoadListScreenState extends State<LoadListScreen> {
     setState(() {
       _connceting = true;
     });
-    if (mac == '') {
-      dialogConnect();
-    } else {
+    if (mac != '') {
+      getBluetoots();
       if (!printed) {
         final bool result =
             await PrintBluetoothThermal.connect(macPrinterAddress: mac);
@@ -434,40 +467,6 @@ class _LoadListScreenState extends State<LoadListScreen> {
         _connceting = false;
       });
     }
-  }
-
-  void dialogConnect() {
-    getBluetoots();
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        backgroundColor: Colors.white,
-        child: Container(
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              color: Colors.grey.withOpacity(0.3),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-            child: ListView.builder(
-              itemCount: items.isNotEmpty ? items.length : 0,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  onTap: () {
-                    String mac = items[index].macAdress;
-                    Preferences.mac = mac;
-                    connect(mac);
-                    Navigator.pop(context);
-                  },
-                  title: Text('Name: ${items[index].name}'),
-                  subtitle: Text("macAdress: ${items[index].macAdress}"),
-                );
-              },
-            )),
-      ),
-    );
   }
 
   Future<void> disconnect() async {
@@ -664,7 +663,7 @@ class _LoadListScreenState extends State<LoadListScreen> {
       final result = await PrintBluetoothThermal.writeBytes(ticket);
       print("impresion $result");
     } else {
-      //no conectado, reconecte
+      dialogConnect();
     }
   }
 

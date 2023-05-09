@@ -6,14 +6,16 @@ class Preferences {
   static String? _conductor = '';
   static String? _matricula = '';
   static String? _mac = '';
-  static String? _host = '';
-  static String? _user = '';
-  static String? _pass = '';
-  static String? _path = '';
+  static String? _host = '2.139.233.108';
+  static String? _user = 'practicas';
+  static String? _pass = 'practicas-250';
+  static String? _pathLocal = '/android/pruebas';
+  static String? _pathExterna = '192.168.100.240';
   static String? _themeName = '';
-  static String? _cooperativa = '';
+  static String? _cooperativa = 'NombreCooperativa';
+  static bool? _tipoRuta = true;
   static bool? _theme = false;
-  static int? _port = 0;
+  static int? _port = 50025;
 
   static Future init() async{
     _prefs = await SharedPreferences.getInstance();
@@ -25,11 +27,13 @@ class Preferences {
   static String? get host => _prefs.getString('host') ?? _host;
   static String? get user => _prefs.getString('user') ?? _user;
   static String? get pass => _prefs.getString('pass') ?? _pass;
-  static String? get path => _prefs.getString('path') ?? _path;
+  static String? get pathLocal => _prefs.getString('pathLocal') ?? _pathLocal;
+  static String? get pathExterna => _prefs.getString('pathExterna') ?? _pathExterna;
   static String? get themeName => _prefs.getString('themeName') ?? _themeName;
   static bool? get theme => _prefs.getBool('theme') ?? _theme;
   static int? get port => _prefs.getInt('port') ?? _port;
   static String? get conductor => _prefs.getString('conductor') ?? _conductor;
+  static bool? get tipoRuta => _prefs.getBool('tipoRuta') ?? _tipoRuta;
 
   static set matricula(String? value) {
     _matricula = value;
@@ -61,9 +65,14 @@ class Preferences {
     _prefs.setString('pass', _pass!);
   }
 
-  static set path(String? value) {
-    _path = value;
-    _prefs.setString('path', _path!);
+  static set pathLocal(String? value) {
+    _pathLocal = value;
+    _prefs.setString('pathLocal', _pathLocal!);
+  }
+
+  static set pathExterna(String? value) {
+    _pathExterna = value;
+    _prefs.setString('pathExterna', _pathExterna!);
   }
 
   static set themeName(String? value) {
@@ -74,6 +83,11 @@ class Preferences {
   static set theme(bool? value) {
     _theme = value;
     _prefs.setBool('theme', _theme!);
+  }
+
+  static set tipoRuta(bool? value) {
+    _tipoRuta = value;
+    _prefs.setBool('tipoRuta', _tipoRuta!);
   }
 
   static set port(int? value) {

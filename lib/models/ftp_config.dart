@@ -1,10 +1,10 @@
 import 'package:transportes_leche/shared_preferences/preferences.dart';
 
 class FTPConfig {
-  static final String _host = Preferences.host ?? '';
+  static final String _host = Preferences.tipoRuta ?? true ? Preferences.pathExterna ?? '' : Preferences.host ?? '';
   static final String _user = Preferences.user ?? '';
   static final String _pass = Preferences.pass ?? '';
-  static final String _path = Preferences.path ?? '';
+  static final String _path = Preferences.pathLocal ?? '';
   static final int _port = Preferences.port ?? 0;
 
   FTPConfig._();

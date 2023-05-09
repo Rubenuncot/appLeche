@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,6 +35,11 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
 
   String fecha = '';
   bool change = true;
+  bool insert = false;
+  bool notInsert = false;
+
+  String codigoGanadero = '';
+
 
   /* Variables impresión */
   String _info = "";
@@ -149,9 +156,8 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
     setState(() {
       _connceting = true;
     });
-    if (mac == '') {
-      dialogConnect();
-    } else {
+    if (mac != '') {
+      getBluetoots();
       if (!printed) {
         final bool result =
             await PrintBluetoothThermal.connect(macPrinterAddress: mac);
@@ -386,7 +392,7 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
   Future<void> printTest() async {
     await connect(Preferences.mac ?? '');
     if(change){
-      createCarga();
+      createCarga(context);
     }
 
     bool conexionStatus = await PrintBluetoothThermal.connectionStatus;
@@ -395,7 +401,7 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
       final result = await PrintBluetoothThermal.writeBytes(ticket);
       print("impresion $result");
     } else {
-      //no conectado, reconecte
+      dialogConnect();
     }
     change = false;
   }
@@ -453,11 +459,13 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
   }
 
   void rellenarListas() async {
-    String nombre = Provider.of<InputProvider>(context, listen: false).valueGan;
+    setState(() {
+      codigoGanadero = Provider.of<InputProvider>(context, listen: false).valueGan;
+    });
     listGan = await ModelProvider.getAllReg(
         Ganadero(codigo: 0, nombre: 'nombre', nif: 'nif', tanques: []));
     for (var g in listGan!) {
-      if ('${g.codigo}' == nombre) {
+      if ('${g.codigo}' == codigoGanadero) {
         for (var x in g.tanques) {
           if (x.codigo != '*') {
             tanques.add(x);
@@ -486,14 +494,14 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
     Iterable<String> listGanaderos = ganaderos.keys;
 
     for (var gan in listGanaderos) {
-      if (gan == nombre) ganaderoNombre = ganaderos[gan]!;
+      if (gan == codigoGanadero) ganaderoNombre = ganaderos[gan]!;
       ganaderosCode.add(gan);
     }
 
     List<dynamic>? listProd =
         await ModelProvider.getAllReg(Producto(descripcion: 'descripcion'));
 
-    if (productos.isEmpty) {
+    if(productos.isEmpty){
       for (var g in listProd!) {
         productos.add(g.descripcion);
       }
@@ -515,14 +523,11 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
     print('Imprimendo ticket');
   }
 
-  void createCarga() async {
+  void createCarga(BuildContext contextC) async {
     fecha =
         '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute}';
     ModelProvider modelProvider =
-        Provider.of<ModelProvider>(context, listen: false);
-    InputProvider inputProvider =
-        Provider.of<InputProvider>(context, listen: false);
-
+        Provider.of<ModelProvider>(contextC, listen: false);
     List<dynamic> conductores =
         await modelProvider.getRegName(Preferences.conductor ?? '', conductor);
     conductor = conductores[0];
@@ -540,18 +545,18 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
     carga.nombreConductor = Preferences.conductor ?? '';
     carga.cifConductor = conductor.cif;
     carga.producto = productoSelected;
-    carga.codGanadero = int.parse(inputProvider.valueGan);
+    carga.codGanadero = int.parse(Provider.of<InputProvider>(contextC, listen: false).valueGan);
     carga.fechaHora =
-        '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute}';
+        '${DateTime.now().day < 10 ? '0${DateTime.now().day}' : DateTime.now().day}/${DateTime.now().month < 10 ? '0${DateTime.now().month}': DateTime.now().month}/${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute < 10 ? '0${DateTime.now().minute}' : DateTime.now().minute}';
     carga.cisterna = matricula.codCisterna;
     carga.enviado = false;
 
-    for (var x in inputProvider.valueLitList) {
+    for (var x in Provider.of<InputProvider>(contextC, listen: false).valueLitList) {
       if (x != '') {
         valuesLitros.add(x);
       }
     }
-    for (var x in inputProvider.valueTempList) {
+    for (var x in Provider.of<InputProvider>(contextC, listen: false).valueTempList) {
       if (x != '') {
         valuesTemps.add(x);
       }
@@ -566,7 +571,7 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
             codigo: tanques[x].codigo,
             litros: double.parse(valuesLitros[x] == '' ? '0' : valuesLitros[x]),
             muestra: valuesLitros[x] == '' ? false : muestras[x],
-            temp: double.parse(valuesTemps[x] == '' ? '0' : valuesTemps[x]));
+            temp: double.parse(valuesTemps[x]));
         tanquesCarga.add(tanque);
       }
     }
@@ -574,17 +579,19 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
     print(
         '${carga.matricula}-${carga.nombreConductor}-${carga.cisterna}-${carga.codGanadero}-${carga.cifConductor}-${carga.fechaHora}-${carga.enviado}-${carga.producto}');
 
-    modelProvider.newReg(carga);
+    if(await modelProvider.newReg(carga) > 0){
+      insert = true;
+    } else {
+      notInsert = true;
+    }
   }
 
   /* Metodos override */
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    InputProvider inputProvider =
-        Provider.of<InputProvider>(context, listen: false);
-    if (valueGan != '') inputProvider.valueGan = valueGan;
-    if (productos.isEmpty) rellenarListas();
+
+    if(productos.isEmpty) rellenarListas();
   }
 
   @override
@@ -592,9 +599,46 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
     args = ModalRoute.of(context)?.settings.arguments;
+
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      if(insert){
+        SmartSnackBars.showTemplatedSnackbar(
+            context: context,
+            backgroundColor: ThemeMain.buttonColor,
+            animationCurve: const ElasticInCurve(),
+            subTitle: 'Carga creada correctamente');
+        insert = false;
+        Provider.of<InputProvider>(context, listen: false)
+            .valueLitList = [];
+        Provider.of<InputProvider>(context, listen: false)
+            .valueTempList = [];
+        Provider.of<InputProvider>(context, listen: false).valueGan = '';
+        setState(() {
+
+        });
+      }
+
+      if(notInsert){
+        SmartSnackBars.showTemplatedSnackbar(
+            context: context,
+            backgroundColor: Colors.redAccent,
+            animationCurve: const ElasticInCurve(),
+            subTitle: 'La carga no se pudo crear');
+        notInsert = false;
+        Provider.of<InputProvider>(context, listen: false)
+            .valueLitList = [];
+        Provider.of<InputProvider>(context, listen: false)
+            .valueTempList = [];
+        Provider.of<InputProvider>(context, listen: false).valueGan = '';
+        setState(() {
+
+        });
+      }
+    });
 
     return GestureDetector(
       onTap: () {
@@ -666,13 +710,10 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
                   ),
                   MaterialButton(
                     height: 50,
-                    onPressed: litrosChange ? () {
-                      printTest();
-                      SmartSnackBars.showTemplatedSnackbar(
-                          context: context,
-                          backgroundColor: ThemeMain.buttonColor,
-                          animationCurve: const ElasticInCurve(),
-                          subTitle: 'Carga creada correctamente');
+                    onPressed: litrosChange ? () async {
+                      await printTest();
+
+
                     } : null,
                     color: ThemeMain.buttonColor,
                       disabledColor: Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? Colors.black12 : Colors.white30,
@@ -754,8 +795,7 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
                             rellenarListas();
                           },
                           keyboardType: TextInputType.number,
-                          initialValue:
-                              Provider.of<InputProvider>(context).valueGan,
+                          initialValue: Provider.of<InputProvider>(context).valueGan,
                           decoration: InputDecorations.authImputDecoration(
                             context: context,
                               hintText: '', labelText: 'Código'),
@@ -766,8 +806,7 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, SearchScreen.routeName,
-                              arguments: [listGan![0], LoadScreen.routeName]);
+                          Navigator.pushReplacementNamed(context, SearchScreen.routeName, arguments: [Ganadero(codigo: 0, nombre: 'nombre', nif: 'nif', tanques: [])]);
                         },
                         style: const ButtonStyle(
                             shape: MaterialStatePropertyAll(
@@ -916,8 +955,12 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
                                           Provider.of<InputProvider>(context,
                                               listen: false);
 
+                                      if(inputProvider.valueTempList.isEmpty){
+                                        inputProvider
+                                            .setValueTemp('0');
+                                      }
                                       inputProvider
-                                          .setValueTemp(inputProvider.valueTemp);
+                                          .setValueTemp(inputProvider.valueTemp == '' ? '0' : inputProvider.valueTemp);
                                       focusNodesTemp[index].unfocus();
                                     },
                                     keyboardType: TextInputType.number,

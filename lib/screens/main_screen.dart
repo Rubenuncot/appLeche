@@ -18,7 +18,6 @@ import 'package:transportes_leche/screens/load_screen.dart';
 import 'package:transportes_leche/shared_preferences/preferences.dart';
 import 'package:transportes_leche/theme/theme_main.dart';
 
-import '../ui/input_decorations.dart';
 import '../widgets/widgets.dart';
 
 Map<String, String> listCond =
@@ -42,7 +41,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   // ----- Variables ----- //
 
   final _advancedDrawerController = AdvancedDrawerController();
-
   /* Valor del dropdown de matriculas */
 
   String dropdownValueMat = Preferences.matricula ?? '';
@@ -136,28 +134,13 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     if (await Permission.storage.request().isDenied) {
       SystemNavigator.pop();
     }
+
   }
 
   // ----- ----- Fin Overrides ----- ----- //
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size; /* Tamaño de la pantalla */
-
-
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      if(showNowDialog){
-        showDialog(context: context, builder: (context) => CustomAlertDialog(
-          titulo: 'Reiniciar App',
-          contenido: Column(
-            children: const [
-              Text('Por favor, reinicie la aplicación para aplicar los cambios recientes.'),
-            ],
-          ),
-          onPressed: () => SystemNavigator.pop(),
-        ));
-        showNowDialog = false;
-      }
-    });
 
     return AdvancedDrawer(
       backdrop: Container(

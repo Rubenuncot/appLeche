@@ -10,7 +10,6 @@ import 'package:transportes_leche/theme/theme_main.dart';
 import 'package:transportes_leche/widgets/widgets.dart';
 
 import '../providers/model_provider.dart';
-import 'main_screen.dart';
 
 class ConfigScreen extends StatefulWidget {
   static String routeName = '_config';
@@ -31,10 +30,12 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
   final TextEditingController _controllerPort = TextEditingController();
   final TextEditingController _controllerUser = TextEditingController();
   final TextEditingController _controllerPass = TextEditingController();
-  final TextEditingController _controllerPath = TextEditingController();
+  final TextEditingController _controllerPathLocal = TextEditingController();
+  final TextEditingController _controllerPathExterna = TextEditingController();
   final TextEditingController _controllerHost = TextEditingController();
   final TextEditingController _controllerTheme = TextEditingController();
   final TextEditingController _controllerCoop = TextEditingController();
+  final TextEditingController _controllerTipoRuta = TextEditingController();
 
 
   @override
@@ -43,11 +44,13 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
 
     _controllerTheme.text = Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? 'Light Mode' : 'Dark Mode';
     _controllerUser.text = Preferences.user ?? '';
-    _controllerPath.text = Preferences.path ?? '';
+    _controllerPathLocal.text = Preferences.pathLocal ?? '';
     _controllerPass.text = Preferences.pass ?? '';
     _controllerPort.text = '${Preferences.port}';
     _controllerHost.text = Preferences.host ?? '';
     _controllerCoop.text = Preferences.cooperativa ?? '';
+    _controllerPathExterna.text = Preferences.pathExterna ?? '';
+    _controllerTipoRuta.text = Preferences.tipoRuta ?? true ? 'Local' : 'Externo';
   }
 
   /* Overrides */
@@ -140,7 +143,7 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),)),
-                _containerRow(context, 'Servidor', _controllerHost, () => showDialog(context: context, builder: (context) => CustomAlertDialog(
+                _containerRow(context, 'Servidor Externo', _controllerHost, () => showDialog(context: context, builder: (context) => CustomAlertDialog(
                   titulo: 'Cambiar Servidor',
                   contenido: Column(
                     children: [
@@ -156,7 +159,70 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),)),
-                _containerRow(context, 'Ruta', _controllerPath, () {
+                _containerRow(context, 'Servidor Local', _controllerPathExterna, () {
+                  showDialog(context: context, builder: (context) => CustomAlertDialog(
+                    titulo: 'Cambiar Ruta',
+                    contenido: Column(
+                      children: [
+                        const Text('Para cambiar la ruta contacte con GAE para tener más información y no provocar errores.'),
+                        TextField(
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            _controllerPathExterna.text = value;
+                            Preferences.pathExterna = value;
+                          },
+                        )
+                      ],
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),);
+                }),
+                Container(
+                  margin: const EdgeInsets.only(top: 20, right: 20),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          bottomRight: Radius.circular(20)),
+                      color: Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? Colors.black12 : Colors.white12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 120, left: 20),
+                          child:TextField(
+                            controller: _controllerTipoRuta,
+                            enabled: false,
+                            decoration: InputDecoration(
+                                disabledBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(color: Colors.black12),
+                                    borderRadius: BorderRadius.circular(5)),
+                                labelText: 'Tipo Servidor'),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          const Text('Externo'), /* false */
+                          Switch(
+                            value: Preferences.tipoRuta ?? true,
+                            onChanged: (value) {
+                              Preferences.tipoRuta = value;
+                              _controllerTipoRuta.text = value ? 'Local' : 'Externo';
+                              setState(() {
+
+                              });
+                            },),
+                          const Text('Local') /* true */
+                        ],
+                      )
+
+                    ],
+                  ),
+                ),
+                _containerRow(context, 'Ruta', _controllerPathLocal, () {
                   showDialog(context: context, builder: (context) => CustomAlertDialog(
                     titulo: 'Cambiar Ruta',
                     contenido: Column(
@@ -164,8 +230,8 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
                         const Text('Para cambiar la ruta contacte con GAE para tener más información y no provocar errores.'),
                         TextField(
                           onChanged: (value) {
-                            _controllerPath.text = value;
-                            Preferences.path = value;
+                            _controllerPathLocal.text = value;
+                            Preferences.pathLocal = value;
                           },
                         )
                       ],
@@ -205,7 +271,7 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
                       ],
                     ),
                     onPressed: () {
-                      if(Preferences.port! > 0 && Preferences.host!.length > 1 && Preferences.user!.length > 1 && Preferences.path!.length > 1 && Preferences.pass!.length > 1){
+                      if(Preferences.port! > 0 && Preferences.host!.length > 1 && Preferences.user!.length > 1 && Preferences.pathLocal!.length > 1 && Preferences.pass!.length > 1){
                         showNowDialog = true;
                       }
                       Navigator.pop(context);
@@ -302,4 +368,3 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
     );
   }
 }
-// TODO: Crear parametro que va a ser la cooperativa (COMPRADOR EN EL TICKET)

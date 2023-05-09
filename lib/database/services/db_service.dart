@@ -37,19 +37,19 @@ class DBProvider {
             FechaHora datetime NOT NULL,
             CodGanadero int NOT NULL,
             Producto varchar(20) NULL,
-            Tanque1 varchar(15) NULL,
+            Tanque1 varchar(16) NULL,
             Litros1 decimal(6, 2) NULL,
             Muestra1 bit NULL,
             Temp1 decimal(4, 2) NULL,
-            Tanque2 varchar(15) NULL,
+            Tanque2 varchar(16) NULL,
             Litros2 decimal(6, 2) NULL,
             Muestra2 bit NULL,
             Temp2 decimal(4, 2) NULL,
-            Tanque3 varchar(15) NULL,
+            Tanque3 varchar(16) NULL,
             Litros3 decimal(6, 2) NULL,
             Muestra3 bit NULL,
             Temp3 decimal(4, 2) NULL,
-            Tanque4 varchar(15) NULL,
+            Tanque4 varchar(16) NULL,
             Litros4 decimal(6, 2) NULL,
             Muestra4 bit NULL,
             Temp4 decimal(4, 2) NULL,
@@ -69,10 +69,10 @@ class DBProvider {
             CodGanadero int PRIMARY KEY NOT NULL,
             NombreGanadero varchar(255) NULL,
             NifGanadero varchar(16) NOT NULL,
-            Tanque1 varchar(15) NULL,
-            Tanque2 varchar(15) NULL,
-            Tanque3 varchar(15) NULL,
-            Tanque4 varchar(15) NULL
+            Tanque1 varchar(16) NULL,
+            Tanque2 varchar(16) NULL,
+            Tanque3 varchar(16) NULL,
+            Tanque4 varchar(16) NULL
           )''');
       await db.execute('''
           CREATE TABLE Industria (

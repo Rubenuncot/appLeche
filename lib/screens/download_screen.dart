@@ -30,12 +30,13 @@ class _DownloadScreenState extends State<DownloadScreen>
 
   final _focusNodeCode = FocusNode();
   final _focusNodeKilos = FocusNode();
-  final _controller = TextEditingController();
   String industriaNombre = '';
 
   /* Variables */
   bool valid = false;
   bool waiting = false;
+  bool complete = false;
+
   dynamic obj = Industria(codigo: 0, nombre: '');
 
   List<dynamic>? industrias = [];
@@ -71,17 +72,23 @@ class _DownloadScreenState extends State<DownloadScreen>
   }
 
   void createDescarga() async {
+    SmartSnackBars.showTemplatedSnackbar(
+        context: context,
+        backgroundColor: ThemeMain.buttonColor,
+        subTitle: 'Creada la descarga correctamente',
+        animationCurve: const ElasticInCurve()
+    );
     ModelProvider modelProvider =
         Provider.of<ModelProvider>(context, listen: false);
     String cod =
         Provider.of<InputProvider>(context, listen: false).valueKil;
 
-    List<dynamic> industrias = await modelProvider.getRegName(obj.nombre, obj);
+    List<dynamic> industrias = await modelProvider.getRegName(getIndustria(), obj);
     industria = industrias[0];
 
     descarga.enviado = false;
     descarga.fechaHora =
-        '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute}';
+    '${DateTime.now().day < 10 ? '0${DateTime.now().day}' : DateTime.now().day}/${DateTime.now().month < 10 ? '0${DateTime.now().month}': DateTime.now().month}/${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute < 10 ? '0${DateTime.now().minute}' : DateTime.now().minute}';
     descarga.codIndustria = industria.codigo;
     descarga.kilos = double.parse(cod);
 
@@ -164,14 +171,15 @@ class _DownloadScreenState extends State<DownloadScreen>
                   ),
                   MaterialButton(
                     height: 50,
-                    onPressed: () {
+                    onPressed:  !complete ? null :() {
                       createDescarga();
-                      SmartSnackBars.showTemplatedSnackbar(
-                          context: context,
-                        backgroundColor: ThemeMain.buttonColor,
-                        subTitle: 'Creada la descarga correctamente',
-                        animationCurve: const ElasticInCurve()
-                      );
+                      setState(() {
+                        Provider.of<InputProvider>(context, listen: false)
+                            .valueInd = '';
+                        Provider.of<InputProvider>(context, listen: false).valueKil = '';
+                        complete = false;
+                      });
+                      Navigator.pushReplacementNamed(context, DownloadScreen.routeName);
                     },
                     color: ThemeMain.buttonColor,
                     shape: RoundedRectangleBorder(
@@ -223,11 +231,7 @@ class _DownloadScreenState extends State<DownloadScreen>
                         ),
                         /* Botón de buscar */
                         ElevatedButton(
-                            onPressed: () => Navigator.pushNamed(
-                                    context, SearchScreen.routeName, arguments: [
-                                  Industria(codigo: 0, nombre: ''),
-                                  DownloadScreen.routeName
-                                ]),
+                            onPressed: () => Navigator.pushReplacementNamed(context, SearchScreen.routeName, arguments: [Industria(codigo: 0, nombre: 'nombre')]),
                             style: const ButtonStyle(
                                 shape: MaterialStatePropertyAll(
                                     RoundedRectangleBorder(
@@ -328,6 +332,9 @@ class _DownloadScreenState extends State<DownloadScreen>
 
                                   inputProvider.valueKil = value;
                                 },
+                                    onEditingComplete: () {
+                                      complete = true;
+                                    },
                                 focusNode: _focusNodeKilos,
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecorations.authImputDecoration(

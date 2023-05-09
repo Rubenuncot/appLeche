@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transportes_leche/providers/input_provider.dart';
 
+import '../screens/screens.dart';
 import '../theme/theme_main.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
@@ -82,7 +83,7 @@ class CustomSearchDelegate extends SearchDelegate {
             type == 'Ganadero'
                 ? Provider.of<InputProvider>(context, listen: false).valueGan = '${matchQuery[index].codigo}'
             : Provider.of<InputProvider>(context, listen: false).valueInd = '${matchQuery[index].codigo}';
-            Navigator.pushNamed(context, route);
+            Navigator.pushReplacementNamed(context, type == 'Ganadero' ? LoadScreen.routeName : DownloadScreen.routeName);
           }
         );
       },
@@ -135,7 +136,7 @@ class CustomSearchDelegate extends SearchDelegate {
               type == 'Ganadero'
                   ? Provider.of<InputProvider>(context, listen: false).valueGan = '${matchQuery[index].codigo}'
                   : Provider.of<InputProvider>(context, listen: false).valueInd = '${matchQuery[index].codigo}';
-              Navigator.pushNamed(context, route);
+              Navigator.pushReplacementNamed(context, type == 'Ganadero' ? LoadScreen.routeName : DownloadScreen.routeName);
             }
         );
       },

@@ -14,14 +14,16 @@ class ModelProvider extends ChangeNotifier {
 
   static List? indust = [];
 
-  Future<void> newReg(dynamic newReg) async {
+  Future<int> newReg(dynamic newReg) async {
+    int resp = -1;
     final List<dynamic> all = await DBProvider.db.getAllReg(newReg);
 
     if (!all.contains(newReg)) {
-      final int resp = await DBProvider.db.newReg(newReg);
-      final reg = await getReg(resp, newReg);
+      resp = await DBProvider.db.newReg(newReg);
       notifyListeners();
     }
+    return resp;
+
   }
 
   Future<dynamic> getReg(int id, newReg) async {
