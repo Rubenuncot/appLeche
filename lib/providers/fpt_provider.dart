@@ -22,7 +22,7 @@ class FtpService extends ChangeNotifier{
   Future<bool> downloadFileFromFTP(String fileName, String savePath) async {
     FTPConnect ftpConnect = await conect();
     try {
-      await ftpConnect.changeDirectory('$path/tablet');
+      await ftpConnect.changeDirectory('$path/GestionL');
 
       final response = await ftpConnect.downloadFile(fileName, File(savePath));
       if (!response) {
@@ -43,7 +43,7 @@ class FtpService extends ChangeNotifier{
   Future<bool> uploadFileFtp(File file) async {
     FTPConnect ftpConnect = await conect();
     try {
-      await ftpConnect.changeDirectory('$path/pedidos');
+      await ftpConnect.changeDirectory('$path/PDA');
 
       final response = await ftpConnect.uploadFile(file);
       if (!response) {

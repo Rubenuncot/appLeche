@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_snackbars/smart_snackbars.dart';
 import 'package:transportes_leche/database/models/conductor_model.dart';
 import 'package:transportes_leche/database/models/matricula_model.dart';
 import 'package:transportes_leche/file_management/file_download.dart';
@@ -39,6 +40,9 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   // ----- Variables ----- //
+  bool ficheroenviado = false;
+
+  bool recibido = false;
 
   final _advancedDrawerController = AdvancedDrawerController();
   /* Valor del dropdown de matriculas */
@@ -101,7 +105,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   Future<void> _downloadFtp() async {
     waiting = false;
-    await DownloadFile.download(context);
+    ficheroenviado = await DownloadFile.download(context);
+    recibido = true;
     setState(() {
       showNowDialog = true;
     });
@@ -141,6 +146,18 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size; /* Tamaño de la pantalla */
+
+    Timer.periodic(const Duration(seconds: 1), (timer) async{
+      if(ficheroenviado){
+        SmartSnackBars.showTemplatedSnackbar(
+            context: context,
+            animationCurve: const ElasticInCurve(),
+            backgroundColor: ThemeMain.buttonColor,
+            subTitle: 'Datos enviados correctamente'
+        );
+        ficheroenviado = false;
+      }
+    });
 
     return AdvancedDrawer(
       backdrop: Container(

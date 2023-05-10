@@ -13,13 +13,14 @@ import 'package:transportes_leche/shared_preferences/preferences.dart';
 import '../database/models/ganadero_model.dart';
 
 class DownloadFile {
-  static Future<void> download(BuildContext context) async {
+  static Future<bool> download(BuildContext context) async {
     FtpService ftpService = Provider.of<FtpService>(context, listen: false);
-    await _getFileFtp(context, ftpService);
+    return await _getFileFtp(context, ftpService);
   }
 
-  static Future<void> _getFileFtp(
+  static Future<bool> _getFileFtp(
       BuildContext context, FtpService ftpService) async {
+    bool enviado = false;
     ModelProvider modelProvider =
         Provider.of<ModelProvider>(context, listen: false);
     Directory? directory;
@@ -46,8 +47,10 @@ class DownloadFile {
     List<String> lineas = await file.readAsLines();
     if (lineas.isNotEmpty) {
       await ftpService.uploadFileFtp(file);
+      enviado = true;
     } else {
       print('No se ha subido');
+      enviado = false;
     }
 
     file = await _setDescarga(modelProvider, directory);
@@ -56,6 +59,8 @@ class DownloadFile {
     if (lineas.isNotEmpty) {
       await ftpService.uploadFileFtp(file);
     }
+
+    return enviado;
   }
 
   static Future<void> _getFileStorage(ModelProvider modelProvider) async {
@@ -242,7 +247,7 @@ Future<File> _setCarga(ModelProvider modelProvider, Directory directory) async {
 
   /* Escribir el fichero*/
   File file = File(
-      '${directory.path}/cargas-${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}${DateTime.now().hour}${DateTime.now().minute}${DateTime.now().second}${DateTime.now().millisecond}.txt');
+      '${directory.path}/cargas_${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}${DateTime.now().hour}${DateTime.now().minute}${DateTime.now().second}${DateTime.now().millisecond}.txt');
   IOSink sink = file.openWrite(mode: FileMode.append);
 
   if (cargas != null) {
@@ -306,7 +311,7 @@ Future<File> _setDescarga(
 
     /* Escribir el fichero*/
     file = File(
-        '${directory.path}/descargas-${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}${DateTime.now().hour}${DateTime.now().minute}${DateTime.now().second}${DateTime.now().millisecond}.txt');
+        '${directory.path}/descargas_${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}${DateTime.now().hour}${DateTime.now().minute}${DateTime.now().second}${DateTime.now().millisecond}.txt');
     IOSink sink = file.openWrite(mode: FileMode.append);
 
     if (descargas != null) {

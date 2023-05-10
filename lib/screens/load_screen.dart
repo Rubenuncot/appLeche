@@ -70,6 +70,7 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
 
   bool argsBool = true;
   bool litrosChange = false;
+  bool tempChange = false;
 
   /* Número de ganaderos */
   Map<String, String> ganaderos = {};
@@ -710,10 +711,10 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
                   ),
                   MaterialButton(
                     height: 50,
-                    onPressed: litrosChange ? () async {
+                    onPressed: litrosChange && tempChange ? () async {
                       await printTest();
-
-
+                      litrosChange = false;
+                      tempChange = false;
                     } : null,
                     color: ThemeMain.buttonColor,
                       disabledColor: Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? Colors.black12 : Colors.white30,
@@ -958,10 +959,12 @@ class _LoadScreenState extends State<LoadScreen> with WidgetsBindingObserver {
                                       if(inputProvider.valueTempList.isEmpty){
                                         inputProvider
                                             .setValueTemp('0');
+                                      } else {
+                                        inputProvider
+                                            .setValueTemp(inputProvider.valueTemp == '' ? '0' : inputProvider.valueTemp);
                                       }
-                                      inputProvider
-                                          .setValueTemp(inputProvider.valueTemp == '' ? '0' : inputProvider.valueTemp);
                                       focusNodesTemp[index].unfocus();
+                                      tempChange = true;
                                     },
                                     keyboardType: TextInputType.number,
                                     decoration:

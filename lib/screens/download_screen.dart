@@ -25,7 +25,6 @@ class DownloadScreen extends StatefulWidget {
 
 class _DownloadScreenState extends State<DownloadScreen>
     with WidgetsBindingObserver {
-
   final _advancedDrawerController = AdvancedDrawerController();
 
   final _focusNodeCode = FocusNode();
@@ -76,19 +75,18 @@ class _DownloadScreenState extends State<DownloadScreen>
         context: context,
         backgroundColor: ThemeMain.buttonColor,
         subTitle: 'Creada la descarga correctamente',
-        animationCurve: const ElasticInCurve()
-    );
+        animationCurve: const ElasticInCurve());
     ModelProvider modelProvider =
         Provider.of<ModelProvider>(context, listen: false);
-    String cod =
-        Provider.of<InputProvider>(context, listen: false).valueKil;
+    String cod = Provider.of<InputProvider>(context, listen: false).valueKil;
 
-    List<dynamic> industrias = await modelProvider.getRegName(getIndustria(), obj);
+    List<dynamic> industrias =
+        await modelProvider.getRegName(getIndustria(), obj);
     industria = industrias[0];
 
     descarga.enviado = false;
     descarga.fechaHora =
-    '${DateTime.now().day < 10 ? '0${DateTime.now().day}' : DateTime.now().day}/${DateTime.now().month < 10 ? '0${DateTime.now().month}': DateTime.now().month}/${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute < 10 ? '0${DateTime.now().minute}' : DateTime.now().minute}';
+        '${DateTime.now().day < 10 ? '0${DateTime.now().day}' : DateTime.now().day}/${DateTime.now().month < 10 ? '0${DateTime.now().month}' : DateTime.now().month}/${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute < 10 ? '0${DateTime.now().minute}' : DateTime.now().minute}';
     descarga.codIndustria = industria.codigo;
     descarga.kilos = double.parse(cod);
 
@@ -121,9 +119,10 @@ class _DownloadScreenState extends State<DownloadScreen>
                   stops: const [0.759, 1],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
-                  colors: [const Color.fromARGB(255, 0, 40, 75), const Color.fromARGB(255, 0, 40, 75).withOpacity(0.7)]
-              )
-          ),
+                  colors: [
+                    const Color.fromARGB(255, 0, 40, 75),
+                    const Color.fromARGB(255, 0, 40, 75).withOpacity(0.7)
+                  ])),
         ),
         controller: _advancedDrawerController,
         animationCurve: Curves.easeInOut,
@@ -143,9 +142,11 @@ class _DownloadScreenState extends State<DownloadScreen>
           // ],
           borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
-        drawer: CustomDrawer(modelProvider: Provider.of<ModelProvider>(context)),
+        drawer:
+            CustomDrawer(modelProvider: Provider.of<ModelProvider>(context)),
         child: Scaffold(
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
           /* Botones Flotantes */
           floatingActionButton: SizedBox(
             width: double.infinity,
@@ -171,16 +172,20 @@ class _DownloadScreenState extends State<DownloadScreen>
                   ),
                   MaterialButton(
                     height: 50,
-                    onPressed:  !complete ? null :() {
-                      createDescarga();
-                      setState(() {
-                        Provider.of<InputProvider>(context, listen: false)
-                            .valueInd = '';
-                        Provider.of<InputProvider>(context, listen: false).valueKil = '';
-                        complete = false;
-                      });
-                      Navigator.pushReplacementNamed(context, DownloadScreen.routeName);
-                    },
+                    onPressed: !complete
+                        ? null
+                        : () {
+                            createDescarga();
+                            setState(() {
+                              Provider.of<InputProvider>(context, listen: false)
+                                  .valueInd = '';
+                              Provider.of<InputProvider>(context, listen: false)
+                                  .valueKil = '';
+                              complete = false;
+                            });
+                            Navigator.pushReplacementNamed(
+                                context, DownloadScreen.routeName);
+                          },
                     color: ThemeMain.buttonColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100)),
@@ -222,8 +227,9 @@ class _DownloadScreenState extends State<DownloadScreen>
                             focusNode: _focusNodeCode,
                             keyboardType: TextInputType.number,
                             decoration: InputDecorations.authImputDecoration(
-                              context: context,
-                                hintText: '123', labelText: 'Código'),
+                                context: context,
+                                hintText: '123',
+                                labelText: 'Código'),
                           ),
                         ),
                         const SizedBox(
@@ -231,7 +237,11 @@ class _DownloadScreenState extends State<DownloadScreen>
                         ),
                         /* Botón de buscar */
                         ElevatedButton(
-                            onPressed: () => Navigator.pushReplacementNamed(context, SearchScreen.routeName, arguments: [Industria(codigo: 0, nombre: 'nombre')]),
+                            onPressed: () => Navigator.pushReplacementNamed(
+                                    context, SearchScreen.routeName,
+                                    arguments: [
+                                      Industria(codigo: 0, nombre: 'nombre')
+                                    ]),
                             style: const ButtonStyle(
                                 shape: MaterialStatePropertyAll(
                                     RoundedRectangleBorder(
@@ -274,11 +284,15 @@ class _DownloadScreenState extends State<DownloadScreen>
                             blurRadius: 10,
                           )
                         ],
-                        color: Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? Colors.black12 : Colors.white),
+                        color: Provider.of<ThemeProvider>(context)
+                                    .currentThemeName ==
+                                'light'
+                            ? Colors.black12
+                            : Colors.white),
                     margin:
                         const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 15),
                     constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width),
                     child: Column(
@@ -298,7 +312,8 @@ class _DownloadScreenState extends State<DownloadScreen>
                               child: Container(
                                 constraints: BoxConstraints(
                                     maxWidth:
-                                        MediaQuery.of(context).size.width * 0.5),
+                                        MediaQuery.of(context).size.width *
+                                            0.7),
                                 child: Text(
                                   'Industria: ${getIndustria()}',
                                   style: const TextStyle(color: Colors.white),
@@ -332,19 +347,25 @@ class _DownloadScreenState extends State<DownloadScreen>
 
                                   inputProvider.valueKil = value;
                                 },
-                                    onEditingComplete: () {
-                                      complete = true;
-                                    },
+                                onEditingComplete: () {
+                                  complete = true;
+                                  setState(() {
+
+                                  });
+                                  _focusNodeKilos.unfocus();
+                                },
                                 focusNode: _focusNodeKilos,
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecorations.authImputDecoration(
-                                  context: context,
-                                    hintText: '', labelText: 'Kilos'),
+                                decoration:
+                                    InputDecorations.authImputDecoration(
+                                        context: context,
+                                        hintText: '',
+                                        labelText: 'Kilos'),
                               )),
                               const SizedBox(
                                 width: 70,
                               ),
-                              const Text('Litros')
+                              const Text('Kilos')
                             ],
                           ),
                         ),

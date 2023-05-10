@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:transportes_leche/providers/theme_provider.dart';
 import 'package:transportes_leche/shared_preferences/preferences.dart';
 import 'package:transportes_leche/theme/theme_main.dart';
+import 'package:transportes_leche/ui/input_decorations.dart';
 import 'package:transportes_leche/widgets/widgets.dart';
 
 import '../providers/model_provider.dart';
@@ -94,14 +95,6 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
         // openScale: 1.0,
         disabledGestures: false,
         childDecoration: const BoxDecoration(
-          // NOTICE: Uncomment if you want to add shadow behind the page.
-          // Keep in mind that it may cause animation jerks.
-          // boxShadow: <BoxShadow>[
-          //   BoxShadow(
-          //     color: Colors.black12,
-          //     blurRadius: 0.0,
-          //   ),
-          // ],
           borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
         drawer: CustomDrawer(modelProvider: Provider.of<ModelProvider>(context)),
@@ -116,7 +109,10 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
                     contenido: Column(
                       children: [
                         const Text('Escriba el nombre de la cooperativa'),
-                        TextField(
+                        const SizedBox(height: 10,),
+                        TextFormField(
+                          decoration: InputDecorations.authImputDecoration(hintText: '', labelText: '', context: context),
+                          initialValue: Preferences.cooperativa,
                           onChanged: (value) {
                             _controllerCoop.text = value;
                             Preferences.cooperativa = value;
@@ -132,7 +128,10 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
                   contenido: Column(
                     children: [
                       const Text('Para cambiar el puerto contacte con GAE para tener más información y no provocar errores.'),
-                      TextField(
+                      const SizedBox(height: 10,),
+                      TextFormField(
+                        decoration: InputDecorations.authImputDecoration(hintText: '', labelText: '', context: context),
+                        initialValue: '${Preferences.port}',
                         onChanged: (value) {
                           _controllerPort.text = value;
                           Preferences.port = int.parse(value);
@@ -148,7 +147,10 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
                   contenido: Column(
                     children: [
                       const Text('Para cambiar el servidor contacte con GAE para tener más información y no provocar errores.'),
-                      TextField(
+                      const SizedBox(height: 10,),
+                      TextFormField(
+                        decoration: InputDecorations.authImputDecoration(hintText: '', labelText: '', context: context),
+                        initialValue: Preferences.host,
                         onChanged: (value) {
                           _controllerHost.text = value;
                           Preferences.host = value;
@@ -161,11 +163,14 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
                 ),)),
                 _containerRow(context, 'Servidor Local', _controllerPathExterna, () {
                   showDialog(context: context, builder: (context) => CustomAlertDialog(
-                    titulo: 'Cambiar Ruta',
+                    titulo: 'Cambiar Servidor',
                     contenido: Column(
                       children: [
                         const Text('Para cambiar la ruta contacte con GAE para tener más información y no provocar errores.'),
-                        TextField(
+                        const SizedBox(height: 10,),
+                        TextFormField(
+                          decoration: InputDecorations.authImputDecoration(hintText: '', labelText: '', context: context),
+                          initialValue: Preferences.pathExterna,
                           keyboardType: TextInputType.number,
                           onChanged: (value) {
                             _controllerPathExterna.text = value;
@@ -186,23 +191,9 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
                           bottomRight: Radius.circular(20)),
                       color: Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? Colors.black12 : Colors.white12),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 120, left: 20),
-                          child:TextField(
-                            controller: _controllerTipoRuta,
-                            enabled: false,
-                            decoration: InputDecoration(
-                                disabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.black12),
-                                    borderRadius: BorderRadius.circular(5)),
-                                labelText: 'Tipo Servidor'),
-                          ),
-                        ),
-                      ),
                       Row(
                         children: [
                           const Text('Externo'), /* false */
@@ -228,7 +219,10 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
                     contenido: Column(
                       children: [
                         const Text('Para cambiar la ruta contacte con GAE para tener más información y no provocar errores.'),
-                        TextField(
+                        const SizedBox(height: 10,),
+                        TextFormField(
+                          decoration: InputDecorations.authImputDecoration(hintText: '', labelText: '', context: context),
+                          initialValue: Preferences.pathLocal,
                           onChanged: (value) {
                             _controllerPathLocal.text = value;
                             Preferences.pathLocal = value;
@@ -245,7 +239,10 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
                     contenido: Column(
                       children: [
                         const Text('Para cambiar el usuario contacte con GAE para tener más información y no provocar errores.'),
-                        TextField(
+                        const SizedBox(height: 10,),
+                        TextFormField(
+                          decoration: InputDecorations.authImputDecoration(hintText: '', labelText: '', context: context),
+                          initialValue: Preferences.user,
                           onChanged: (value) {
                             _controllerUser.text = value;
                             Preferences.user = value;
@@ -262,7 +259,10 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
                     contenido: Column(
                       children: [
                         const Text('Para cambiar la contraseña contacte con GAE para tener más información y no provocar errores.'),
-                        TextField(
+                        const SizedBox(height: 10,),
+                        TextFormField(
+                          decoration: InputDecorations.authImputDecoration(hintText: '', labelText: '', context: context),
+                          initialValue: Preferences.pass,
                           onChanged: (value) {
                             _controllerPass.text = value;
                             Preferences.pass = value;
@@ -292,8 +292,8 @@ class _ConfigScreenState extends State<ConfigScreen> with WidgetsBindingObserver
                     children: [
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(right: 120, left: 20),
-                          child:TextField(
+                          margin: const EdgeInsets.only(right: 50, left: 20),
+                          child: TextField(
                             controller: _controllerTheme,
                             enabled: false,
                             decoration: InputDecoration(

@@ -41,7 +41,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
       title: Center(child: Text(widget.titulo)),
       content: SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           children: [
             if (widget.icono != null)
               Icon(

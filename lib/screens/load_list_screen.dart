@@ -87,7 +87,7 @@ class _LoadListScreenState extends State<LoadListScreen> {
 
   bool printed = false;
 
-  void borrarCarga() async{
+  void borrarCarga() async {
     await Provider.of<ModelProvider>(context, listen: false).deleteCarga(carga);
     borrado = true;
   }
@@ -128,7 +128,8 @@ class _LoadListScreenState extends State<LoadListScreen> {
 
   void showBorrar() {
     Dialogs.bottomMaterialDialog(
-        msg: 'Estás seguro de borrar la Carga? No se puede deshacer esta acción.',
+        msg:
+            'Estás seguro de borrar la Carga? No se puede deshacer esta acción.',
         title: 'Borrar Carga',
         context: context,
         actions: [
@@ -167,11 +168,20 @@ class _LoadListScreenState extends State<LoadListScreen> {
           titulo: '',
           contenido: TicketWidget(
               isCornerRounded: true,
-              shadow: [BoxShadow(color: Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? Colors.black12 : Colors.white12,)],
-              color: Provider.of<ThemeProvider>(context).currentThemeName == 'light' ? Colors.white : const Color.fromARGB(
-                  1, 82, 82, 82),
+              shadow: [
+                BoxShadow(
+                  color: Provider.of<ThemeProvider>(context).currentThemeName ==
+                          'light'
+                      ? Colors.black12
+                      : Colors.white12,
+                )
+              ],
+              color: Provider.of<ThemeProvider>(context).currentThemeName ==
+                      'light'
+                  ? Colors.white
+                  : const Color.fromARGB(1, 82, 82, 82),
               width: width,
-              height: tanques.length < 2 ? height * 0.6 : height * 0.7,
+              height: height * 0.8,
               child: Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -452,21 +462,19 @@ class _LoadListScreenState extends State<LoadListScreen> {
     });
     if (mac != '') {
       getBluetoots();
-      if (!printed) {
-        final bool result =
-            await PrintBluetoothThermal.connect(macPrinterAddress: mac);
-        print("state conected $result");
-        if (result) {
-          connected = true;
-          printed = true;
-        }
-      } else {
+      final bool result =
+          await PrintBluetoothThermal.connect(macPrinterAddress: mac);
+      print("state conected $result");
+      if (result) {
         connected = true;
+        printed = true;
       }
-      setState(() {
-        _connceting = false;
-      });
+    } else {
+      connected = true;
     }
+    setState(() {
+      _connceting = false;
+    });
   }
 
   Future<void> disconnect() async {
@@ -748,7 +756,7 @@ class _LoadListScreenState extends State<LoadListScreen> {
           Container(
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width,
-                maxHeight: MediaQuery.of(context).size.height * 0.8),
+                maxHeight: MediaQuery.of(context).size.height * 0.76),
             child: ListView.builder(
               itemCount: cargas?.length,
               itemBuilder: (context, index) {

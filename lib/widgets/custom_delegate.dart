@@ -7,9 +7,8 @@ import '../theme/theme_main.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
   List<dynamic>? industrias = [];
-  final String route;
   final String type;
-  CustomSearchDelegate(this.industrias, this.route, this.type);
+  CustomSearchDelegate(this.industrias, this.type);
 
   Widget build(BuildContext context) {
     return const Placeholder();

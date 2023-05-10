@@ -13,7 +13,6 @@ import 'package:transportes_leche/database/models/descarga_model.dart';
 
 import '../providers/model_provider.dart';
 import '../theme/theme_main.dart';
-import '../widgets/custom_alert_dialog.dart';
 
 class DownloadListScreen extends StatefulWidget {
   static String routeName = '_downloadList';
@@ -133,7 +132,7 @@ class _DownloadListScreenState extends State<DownloadListScreen> {
           ),
           const SizedBox(height: 20,),
           Container(
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width, maxHeight: MediaQuery.of(context).size.height * 0.8),
+            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width, maxHeight: MediaQuery.of(context).size.height * 0.76),
             child: ListView.builder(
               itemCount: descargas?.length,
               itemBuilder: (context, index) {
@@ -143,49 +142,55 @@ class _DownloadListScreenState extends State<DownloadListScreen> {
                       color: Colors.black12,
                       borderRadius: BorderRadius.all(Radius.circular(5))),
                   child: ListTile(
-                      title: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      title: Column(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 3),
-                            width: MediaQuery.of(context).size.width * 0.2,
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 143, 67, 238),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: index < (descargas?.length ?? 1)
-                                ? Row(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('${descargas![index].codIndustria ?? ''}'),
-                              ],
-                            )
-                                : const Text(''),
-                          ),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.3,
-                              child: Text(
-                                '${descargas![index].fechaHora ?? ''}',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              )),
-                          AnimatedRadioButtons(
-                              items: [
-                                AnimatedRadioButtonItem(color: ThemeMain.buttonColor, label: '')
-                              ],
-                              animationCurve: const ElasticInCurve(),
-                              backgroundColor: Colors.black12,
-                              onChanged: (value) {
-                                Provider.of<ModelProvider>(context, listen: false).updateDescarga(descargas![index], !descargas![index].enviado);
-                                setState(() {
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 3),
+                                width: MediaQuery.of(context).size.width * 0.2,
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(255, 143, 67, 238),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: index < (descargas?.length ?? 1)
+                                    ? Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('${descargas![index].codIndustria ?? ''}'),
+                                  ],
+                                )
+                                    : const Text(''),
+                              ),
+                              SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.3,
+                                  child: Text(
+                                    '${descargas![index].fechaHora ?? ''}',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  )),
+                              AnimatedRadioButtons(
+                                  items: [
+                                    AnimatedRadioButtonItem(color: ThemeMain.buttonColor, label: '')
+                                  ],
+                                  animationCurve: const ElasticInCurve(),
+                                  backgroundColor: Colors.black12,
+                                  onChanged: (value) {
+                                    Provider.of<ModelProvider>(context, listen: false).updateDescarga(descargas![index], !descargas![index].enviado);
+                                    setState(() {
 
-                                });
-                              },
-                              value: descargas![index].enviado == false ? 1: 0)
+                                    });
+                                  },
+                                  value: descargas![index].enviado == false ? 1: 0)
+                            ],
+                          ),
+                          const Divider(),
+                          Center(child: Text('Kilos: ${descargas![index].kilos}'))
                         ],
                       ),
                       onTap: () {

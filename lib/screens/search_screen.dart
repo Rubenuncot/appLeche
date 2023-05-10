@@ -62,7 +62,7 @@ class SearchScreen extends StatelessWidget {
               onPressed: () async {
                 showSearch(
                     context: context,
-                    delegate: CustomSearchDelegate(industria, args[1], type));
+                    delegate: CustomSearchDelegate(industria, type));
               },
             )
           ],

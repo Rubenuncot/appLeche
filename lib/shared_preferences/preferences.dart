@@ -6,16 +6,16 @@ class Preferences {
   static String? _conductor = '';
   static String? _matricula = '';
   static String? _mac = '';
-  static String? _host = '2.139.233.108';
-  static String? _user = 'practicas';
-  static String? _pass = 'practicas-250';
-  static String? _pathLocal = '/android/pruebas';
-  static String? _pathExterna = '192.168.100.240';
+  static String? _host = '81.42.222.136';
+  static String? _user = 'tablet';
+  static String? _pass = 'tablet2014*';
+  static String? _pathLocal = '';
+  static String? _pathExterna = '';
   static String? _themeName = '';
   static String? _cooperativa = 'NombreCooperativa';
   static bool? _tipoRuta = true;
   static bool? _theme = false;
-  static int? _port = 50025;
+  static int? _port = 3021;
 
   static Future init() async{
     _prefs = await SharedPreferences.getInstance();
